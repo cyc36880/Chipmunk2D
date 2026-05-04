@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 3.10)
+project(main)
+
+# Chipmunk2D 头文件
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/components/chipmunk2D/include)
+
+# SDL2 配置 (MinGW / msys64)
+set(SDL2_INCLUDE_DIR D:/msys64/mingw64/include/SDL2)
+set(SDL2_LIBRARY_DIR D:/msys64/mingw64/lib)
+
+include_directories(${SDL2_INCLUDE_DIR})
+link_directories(${SDL2_LIBRARY_DIR})
+
+# Chipmunk2D 源文件
+file(GLOB_RECURSE CHIPMUNK_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/components/chipmunk2D/src/*.c)
+
+add_executable(main main.c ${CHIPMUNK_SOURCES})
+
+# 链接 SDL2 (顺序: mingw32 → SDL2main → SDL2)
+target_link_libraries(main mingw32 SDL2main SDL2)
