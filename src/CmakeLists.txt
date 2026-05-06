@@ -9,13 +9,21 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 set(SDL2_INCLUDE_DIR D:/msys64/mingw64/include/SDL2)
 set(SDL2_LIBRARY_DIR D:/msys64/mingw64/lib)
 
-include_directories(${SDL2_INCLUDE_DIR})
-link_directories(${SDL2_LIBRARY_DIR})
+# Chipmunk2D 静态库配置
+set(BUILD_STATIC ON)
+add_subdirectory(components/chipmunk2D/src)
 
-# Chipmunk2D 源文件
-file(GLOB_RECURSE CHIPMUNK_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/components/chipmunk2D/src/*.c)
+# 创建可执行文件
+add_executable(main)
 
-add_executable(main main.c ${CHIPMUNK_SOURCES})
+target_include_directories(main PRIVATE ${SDL2_INCLUDE_DIR}) 
+target_link_directories(main PRIVATE ${SDL2_LIBRARY_DIR})
+target_sources(
+    main 
+    PRIVATE 
+        main.c
+        # ${CHIPMUNK_SOURCES}
+)
 
-# 链接 SDL2 (顺序: mingw32 → SDL2main → SDL2)
-target_link_libraries(main mingw32 SDL2main SDL2)
+# 链接 SDL2 
+target_link_libraries(main PRIVATE SDL2 chipmunk_static)
